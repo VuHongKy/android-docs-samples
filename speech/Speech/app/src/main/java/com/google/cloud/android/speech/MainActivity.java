@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mSpeechService = null;
+            mStatus.setVisibility(View.INVISIBLE);
         }
 
     };
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             @Override
             public void onClick(View view) {
                 stopSpeech();
+                mStatus.setVisibility(View.INVISIBLE);
             }
         });
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
@@ -218,7 +220,9 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_file:
-                mSpeechService.recognizeInputStream(getResources().openRawResource(R.raw.audio));
+                if (mSpeechService != null) {
+                    mSpeechService.recognizeInputStream(getResources().openRawResource(R.raw.audio));
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
