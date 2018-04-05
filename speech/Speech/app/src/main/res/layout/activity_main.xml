@@ -37,7 +37,43 @@
             android:paddingLeft="32dp"
             android:paddingRight="32dp"/>
 
-        <include layout="@layout/item_result"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:textAllCaps="false"
+                android:text="Start"
+                />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnPause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:textAllCaps="false"
+                android:text="Pause"
+                />
+
+            <include
+                layout="@layout/item_result"
+                android:layout_toEndOf="@+id/btnStart"
+                android:layout_toStartOf="@+id/btnPause"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </RelativeLayout>
 
     </android.support.design.widget.AppBarLayout>
 

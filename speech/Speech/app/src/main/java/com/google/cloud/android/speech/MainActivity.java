@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     private TextView mText;
     private ResultAdapter mAdapter;
     private RecyclerView mRecyclerView;
+    private AppCompatButton btnStart;
+    private AppCompatButton btnPause;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -126,19 +129,23 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 savedInstanceState.getStringArrayList(STATE_RESULTS);
         mAdapter = new ResultAdapter(results);
         mRecyclerView.setAdapter(mAdapter);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // Prepare Cloud Speech API
-        bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
-
-        // Start listening to voices
+        btnStart = (AppCompatButton) findViewById(R.id.btnStart);
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startSpeech();
+            }
+        });
+        btnPause = (AppCompatButton) findViewById(R.id.btnPause);
+        btnPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopSpeech();
+            }
+        });
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED) {
-            startVoiceRecorder();
+            //Todo: Auto enable here -> startVoiceRecorder(); || startSpeech();
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.RECORD_AUDIO)) {
             showPermissionMessageDialog();
@@ -149,16 +156,33 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void onStop() {
+        stopSpeech();
+        super.onStop();
+    }
+
+    private void startSpeech() {
+        // Prepare Cloud Speech API
+        bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
+        // Start listening to voices
+        startVoiceRecorder();
+    }
+
+    private void stopSpeech() {
         // Stop listening to voice
         stopVoiceRecorder();
 
         // Stop Cloud Speech API
-        mSpeechService.removeListener(mSpeechServiceListener);
-        unbindService(mServiceConnection);
-        mSpeechService = null;
-
-        super.onStop();
+        if (mSpeechService != null) {
+            mSpeechService.removeListener(mSpeechServiceListener);
+            unbindService(mServiceConnection);
+            mSpeechService = null;
+        }
     }
 
     @Override
@@ -175,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
         if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (permissions.length == 1 && grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startVoiceRecorder();
+                //Todo: Auto enable here -> startVoiceRecorder(); || startSpeech();
             } else {
                 showPermissionMessageDialog();
             }
