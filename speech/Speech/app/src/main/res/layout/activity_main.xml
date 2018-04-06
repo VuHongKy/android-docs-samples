@@ -14,68 +14,82 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.google.cloud.android.speech.MainActivity">
+    android:orientation="vertical"
+    tools:context="com.google.cloud.android.speech.MainActivity"
+    >
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
         android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"/>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/primary"
+        >
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:textAllCaps="false"
+            android:text="Start"
+            />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btnPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:textAllCaps="false"
+            android:text="Pause"
+            />
+
+        <include
+            android:id="@+id/itemResult"
+            layout="@layout/item_result"
+            android:layout_toEndOf="@+id/btnStart"
+            android:layout_toStartOf="@+id/btnPause"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:paddingLeft="32dp"
-            android:paddingRight="32dp"/>
+            />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:background="@color/primary"
+        >
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinnerLanguage"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            >
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnStart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:textAllCaps="false"
-                android:text="Start"
-                />
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnPause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:textAllCaps="false"
-                android:text="Pause"
-                />
-
-            <include
-                layout="@layout/item_result"
-                android:layout_toEndOf="@+id/btnStart"
-                android:layout_toStartOf="@+id/btnPause"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-
-        </RelativeLayout>
-
-    </android.support.design.widget.AppBarLayout>
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            tools:listitem="@layout/support_simple_spinner_dropdown_item"
+            />
+    </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -85,6 +99,6 @@
         android:paddingBottom="@dimen/spacing_small"
         android:paddingTop="@dimen/spacing_small"
         app:behavior_overlapTop="128dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        />
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

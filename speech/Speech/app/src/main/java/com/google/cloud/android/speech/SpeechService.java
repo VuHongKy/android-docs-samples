@@ -107,6 +107,7 @@ public class SpeechService extends Service {
     private volatile AccessTokenTask mAccessTokenTask;
     private SpeechGrpc.SpeechStub mApi;
     private static Handler mHandler;
+    private static String language = getDefaultLanguageCode();
 
     private final StreamObserver<StreamingRecognizeResponse> mResponseObserver
             = new StreamObserver<StreamingRecognizeResponse>() {
@@ -212,7 +213,7 @@ public class SpeechService extends Service {
         mAccessTokenTask.execute();
     }
 
-    private String getDefaultLanguageCode() {
+    public static String getDefaultLanguageCode() {
         final Locale locale = Locale.getDefault();
         final StringBuilder language = new StringBuilder(locale.getLanguage());
         final String country = locale.getCountry();
@@ -252,7 +253,7 @@ public class SpeechService extends Service {
         mRequestObserver.onNext(StreamingRecognizeRequest.newBuilder()
                 .setStreamingConfig(StreamingRecognitionConfig.newBuilder()
                         .setConfig(RecognitionConfig.newBuilder()
-                                .setLanguageCode(getDefaultLanguageCode())
+                                .setLanguageCode(language)
                                 .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
                                 .setSampleRateHertz(sampleRate)
                                 .build())
@@ -260,6 +261,10 @@ public class SpeechService extends Service {
                         .setSingleUtterance(true)
                         .build())
                 .build());
+    }
+
+    public static void setLanguageCode(String languageCode) {
+        language = languageCode;
     }
 
     /**

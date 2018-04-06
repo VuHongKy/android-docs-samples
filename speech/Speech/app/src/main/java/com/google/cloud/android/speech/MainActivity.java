@@ -29,6 +29,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -38,9 +39,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity implements MessageDialogFragment.Listener {
@@ -92,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     private RecyclerView mRecyclerView;
     private AppCompatButton btnStart;
     private AppCompatButton btnPause;
+    private AppCompatSpinner spinnerLanguage;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -145,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 mStatus.setVisibility(View.INVISIBLE);
             }
         });
+        setupSpinnerLanguage();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED) {
             //Todo: Auto enable here -> startVoiceRecorder(); || startSpeech();
@@ -155,6 +162,50 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
                     REQUEST_RECORD_AUDIO_PERMISSION);
         }
+    }
+
+    private void setupSpinnerLanguage() {
+        final List<String> languages = new ArrayList<>();
+        languages.add("Default language");
+        languages.add("Japanese");
+        languages.add("Vietnamese");
+        languages.add("English");
+        final ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.layout_spinner, languages);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+
+        spinnerLanguage = (AppCompatSpinner) findViewById(R.id.spinnerLanguage);
+        spinnerLanguage.setAdapter(adapter);
+        spinnerLanguage.setSelection(0);
+        spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                updateSpeechLanguage(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void updateSpeechLanguage(int position) {
+        final String language;
+        switch (position) {
+            case 0:
+                language = SpeechService.getDefaultLanguageCode();
+                break;
+            case 1:
+                language = "ja-JP";
+                break;
+            case 2:
+                language = "vi-VI";
+                break;
+            default:
+                language = "en-US";
+                break;
+        }
+        SpeechService.setLanguageCode(language);
     }
 
     @Override
