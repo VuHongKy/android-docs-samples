@@ -28,7 +28,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,11 +40,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity implements MessageDialogFragment.Listener {
@@ -95,8 +95,9 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     private TextView mText;
     private ResultAdapter mAdapter;
     private RecyclerView mRecyclerView;
-    private AppCompatButton btnStart;
-    private AppCompatButton btnPause;
+//    private AppCompatButton btnStart;
+//    private AppCompatButton btnPause;
+    private ToggleButton btnPlay;
     private AppCompatSpinner spinnerLanguage;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -136,21 +137,33 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
                 savedInstanceState.getStringArrayList(STATE_RESULTS);
         mAdapter = new ResultAdapter(results);
         mRecyclerView.setAdapter(mAdapter);
-        btnStart = (AppCompatButton) findViewById(R.id.btnStart);
-        btnStart.setOnClickListener(new View.OnClickListener() {
+        btnPlay = (ToggleButton) findViewById(R.id.btnPlay);
+        btnPlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                startSpeech();
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    startSpeech();
+                } else {
+                    stopSpeech();
+                    mStatus.setVisibility(View.INVISIBLE);
+                }
             }
         });
-        btnPause = (AppCompatButton) findViewById(R.id.btnPause);
-        btnPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopSpeech();
-                mStatus.setVisibility(View.INVISIBLE);
-            }
-        });
+//        btnStart = (AppCompatButton) findViewById(R.id.btnStart);
+//        btnStart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startSpeech();
+//            }
+//        });
+//        btnPause = (AppCompatButton) findViewById(R.id.btnPause);
+//        btnPause.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                stopSpeech();
+//                mStatus.setVisibility(View.INVISIBLE);
+//            }
+//        });
         setupSpinnerLanguage();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -214,10 +227,16 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     }
 
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
         stopSpeech();
-        super.onStop();
+        super.onDestroy();
     }
+
+//    @Override
+//    protected void onStop() {
+//        stopSpeech();
+//        super.onStop();
+//    }
 
     private void startSpeech() {
         // Prepare Cloud Speech API
