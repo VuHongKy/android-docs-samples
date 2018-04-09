@@ -214,9 +214,9 @@ public class MainActivity extends AppCompatActivity implements MessageDialogFrag
     }
 
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
         stopSpeech();
-        super.onStop();
+        super.onDestroy();
     }
 
     private void startSpeech() {
